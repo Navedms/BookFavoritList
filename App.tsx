@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistStore } from "redux-persist";
+
+// store
+import { store } from "@store/store";
+import { NavigationContainer } from "@react-navigation/native";
+
+// navigation
+import { navigationRef } from "@navigation/rootNavigation";
+import navigationTheme from "@navigation/navigationTheme";
+import AppNavigator from "@navigation/AppNavigator";
+
+const queryClient = new QueryClient();
 
 export default function App() {
+  const persistor = persistStore(store);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <QueryClientProvider client={queryClient}>
+          <NavigationContainer ref={navigationRef} theme={navigationTheme}>
+            <AppNavigator />
+          </NavigationContainer>
+        </QueryClientProvider>
+      </PersistGate>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
