@@ -7,7 +7,7 @@ import colors from "@config/colors";
 import Modal from "../AppModal";
 import Text from "../Text";
 import { Form, SubmitButton, FormGroupPicker, FormField } from "./index";
-import { Sort } from "@store/filters/filtersSlice";
+import { listType, Sort } from "@store/filters/filtersSlice";
 
 interface FilterItem {
   type: string;
@@ -43,7 +43,7 @@ interface Search {
 interface FiltersProps {
   onSetFilters: (filters: SelectedFilters) => void;
   onResetFilters: () => void;
-  onGridListToggle?: (isGridList: boolean) => void;
+  onGridListToggle?: (type: listType) => void;
   firstData: FilterItem[];
   defaultFilters: SelectedFilters;
   search: Search;
@@ -124,7 +124,7 @@ function Filters({
 
   const handleGridListToggle = () => {
     setIsGridList((prev) => !prev);
-    onGridListToggle?.(!isGridList);
+    onGridListToggle?.(isGridList ? "list" : "grid");
   };
 
   return (
@@ -137,20 +137,23 @@ function Filters({
       validationSchema={validationSchema}
     >
       <View style={styles.rowContainer}>
+        {onGridListToggle && (
+          <TouchableOpacity onPress={handleGridListToggle}>
+            <View style={styles.toggleContainer}>
+              <MaterialCommunityIcons
+                name={
+                  isGridList
+                    ? "view-grid-outline"
+                    : "format-list-bulleted-square"
+                }
+                size={30}
+                color={colors.dark}
+                style={[styles.icon, filterSelect && { marginTop: -6 }]}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
         <View style={styles.filtersContainer}>
-          {/* add icon that make the list grid or list view */}
-          {onGridListToggle && (
-            <TouchableOpacity onPress={handleGridListToggle}>
-              <View style={styles.trigerContainer}>
-                <MaterialCommunityIcons
-                  name={isGridList ? "filter-check-outline" : "filter-outline"}
-                  size={30}
-                  color={filterSelect ? colors.primary : colors.dark}
-                  style={[styles.icon, filterSelect && { marginTop: -6 }]}
-                />
-              </View>
-            </TouchableOpacity>
-          )}
           <TouchableOpacity onPress={() => setVisible(true)}>
             <View style={styles.trigerContainer}>
               <MaterialCommunityIcons
@@ -189,7 +192,7 @@ function Filters({
             onRemoveValue={search.onRemoveValue()}
             placeholder={search.placeholder}
             icon={search.icon}
-            width={"80%"}
+            width={onGridListToggle ? "70%" : "84%"}
             disabled={search.disabled}
           />
         )}
@@ -224,9 +227,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  toggleContainer: {
+    padding: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
   trigerContainer: {
     flexDirection: "row",
-    padding: 10,
+    padding: 5,
     alignItems: "center",
   },
   rowContainer: {
