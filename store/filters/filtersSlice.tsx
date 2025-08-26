@@ -56,7 +56,6 @@ export function getFilteredBooks(
 export const defaultFilters: SelectedFilters = {
   filters: {
     text: "",
-    listType: "grid",
   },
   sort: {
     sorttype: "name",
@@ -68,12 +67,14 @@ interface FiltersState {
   filters: SelectedFilters;
   loading: boolean;
   filteredList: Book[];
+  listType: listType;
 }
 
 const initialState: FiltersState = {
   filters: defaultFilters,
   loading: false,
   filteredList: [],
+  listType: "grid",
 };
 
 export type sortType = "name" | "pages" | "releaseDate";
@@ -91,22 +92,27 @@ const filtersSlice = createSlice({
   reducers: {
     onFilter(
       state,
-      action: PayloadAction<
+      {
+        payload,
+      }: PayloadAction<
         SelectedFilters & { books: Book[]; searchElements?: string[] }
       >
     ) {
       state.loading = true;
-      state.filters = action.payload;
+      state.filters = payload;
       state.filteredList = getFilteredBooks(
-        action.payload.books,
-        action.payload.sort,
-        action.payload.filters.text,
-        action.payload.searchElements
+        payload.books,
+        payload.sort,
+        payload.filters.text,
+        payload.searchElements
       );
       state.loading = false;
+    },
+    setListType(state, { payload }: PayloadAction<listType>) {
+      state.listType = payload;
     },
   },
 });
 
-export const { onFilter } = filtersSlice.actions;
+export const { onFilter, setListType } = filtersSlice.actions;
 export default filtersSlice.reducer;
