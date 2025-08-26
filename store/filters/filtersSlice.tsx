@@ -1,6 +1,11 @@
 import { SelectedFilters } from "@components/forms/Filters";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { Book } from "@store/books/booksSlice";
+
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+
+dayjs.extend(customParseFormat);
 
 export function getFilteredBooks(
   books: Book[],
@@ -32,13 +37,14 @@ export function getFilteredBooks(
           bValue = b.pages;
           break;
         case "releaseDate":
-          aValue = new Date(a.releaseDate).getTime();
-          bValue = new Date(b.releaseDate).getTime();
+          aValue = dayjs(a.releaseDate, "MMM D, YYYY").valueOf();
+          bValue = dayjs(b.releaseDate, "MMM D, YYYY").valueOf();
           break;
         default:
           aValue = a.title.toLowerCase();
           bValue = b.title.toLowerCase();
       }
+
       if (aValue < bValue) return sort.sortdirection === "asc" ? -1 : 1;
       if (aValue > bValue) return sort.sortdirection === "asc" ? 1 : -1;
       return 0;
