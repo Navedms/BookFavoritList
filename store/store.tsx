@@ -16,7 +16,6 @@ const createReducer = combineReducers({
   books: booksReducer,
   favorites: favoritesReducer,
   filters: filtersReducer,
-  theme: themeReducer,
 });
 
 const reducers = persistReducer(persistConfig, createReducer);
