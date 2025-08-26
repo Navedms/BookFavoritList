@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import booksReducer from "./books/booksSlice";
 import favoritesReducer from "./favorites/favoritesSlice";
+import filtersReducer from "./filters/filtersSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistReducer } from "redux-persist";
 
@@ -13,6 +14,7 @@ const persistConfig = {
 const createReducer = combineReducers({
   books: booksReducer,
   favorites: favoritesReducer,
+  filters: filtersReducer,
 });
 
 const reducers = persistReducer(persistConfig, createReducer);
