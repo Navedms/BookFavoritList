@@ -1,49 +1,3 @@
-import type { RootState } from "../store";
-import type { Sort } from "../filtersSlice";
-// Selector to get filtered and sorted books
-// Accepts: books array, search string, sort object
-export function getFilteredBooks(
-  books: Book[],
-  search: string,
-  sort: Sort
-): Book[] {
-  let filtered = books;
-  if (search) {
-    const s = search.toLowerCase();
-    filtered = filtered.filter(
-      (book: Book) =>
-        book.title.toLowerCase().includes(s) ||
-        book.description.toLowerCase().includes(s)
-    );
-  }
-  if (sort) {
-    filtered = [...filtered].sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
-      switch (sort.sorttype) {
-        case "name":
-          aValue = a.title.toLowerCase();
-          bValue = b.title.toLowerCase();
-          break;
-        case "pages":
-          aValue = a.pages;
-          bValue = b.pages;
-          break;
-        case "releaseDate":
-          aValue = new Date(a.releaseDate).getTime();
-          bValue = new Date(b.releaseDate).getTime();
-          break;
-        default:
-          aValue = a.title.toLowerCase();
-          bValue = b.title.toLowerCase();
-      }
-      if (aValue < bValue) return sort.sortdirection === "asc" ? -1 : 1;
-      if (aValue > bValue) return sort.sortdirection === "asc" ? 1 : -1;
-      return 0;
-    });
-  }
-  return filtered;
-}
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Book {
@@ -75,17 +29,17 @@ const booksSlice = createSlice({
   reducers: {
     setBooks: (
       state,
-      action: PayloadAction<{ books: Book[]; lastFetched: number }>
+      { payload }: PayloadAction<{ books: Book[]; lastFetched: number }>
     ) => {
-      state.books = action.payload.books;
-      state.lastFetched = action.payload.lastFetched;
+      state.books = payload.books;
+      state.lastFetched = payload.lastFetched;
     },
     clearBooks: (state) => {
       state.books = [];
       state.lastFetched = null;
     },
-    setBookIndex: (state, action: PayloadAction<number>) => {
-      state.currentBookIndex = action.payload;
+    setBookIndex: (state, { payload }: PayloadAction<number>) => {
+      state.currentBookIndex = payload;
     },
   },
 });

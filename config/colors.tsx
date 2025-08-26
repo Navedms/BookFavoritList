@@ -2,7 +2,7 @@ export interface Colors {
   [key: string]: string;
 }
 
-const colors: Colors = {
+export const lightColors: Colors = {
   opacity: "rgba(255, 255, 255, 0)",
   black: "#000",
   opacityBlack: "rgba(0, 0, 0, 0.5)",
@@ -21,4 +21,23 @@ const colors: Colors = {
   disabled: "#F2DEDE",
 };
 
-export default colors;
+export const darkColors: Colors = {
+  opacity: "rgba(0, 0, 0, 0)",
+  black: "#fff",
+  opacityBlack: "rgba(255, 255, 255, 0.5)",
+  white: "#000",
+  background: "#2A2A2CFF",
+  opacityWhite: "rgba(0, 0, 0, 0.8)",
+  primary: "#4F8EF7",
+  secondary: "#222244",
+  dark: "#e0e0e0",
+  darkMedium: "#cac7c7",
+  medium: "#7c7b7b",
+  light: "#4c4b4b",
+  delete: "#ff3333",
+  lightDelete: "#FF7D7D",
+  sun: "#fff12e",
+  disabled: "#333",
+};
+
+export default lightColors;

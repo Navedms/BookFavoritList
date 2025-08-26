@@ -7,23 +7,17 @@ import {
   ViewStyle,
 } from "react-native";
 
-import colors from "../config/colors";
+import useColors from "@hooks/useColors";
 
 interface ScreenProps {
   children: React.ReactNode;
   style?: ViewStyle;
   onPress?: () => void;
-  titleColor?: string;
-  backgroundColor?: string;
 }
 
-function Screen({
-  children,
-  style,
-  onPress,
-  titleColor,
-  backgroundColor = colors.background,
-}: ScreenProps) {
+function Screen({ children, style, onPress }: ScreenProps) {
+  const colors = useColors();
+  const backgroundColor = colors.background;
   return (
     <View style={[styles.screen, { backgroundColor: backgroundColor }, style]}>
       {onPress ? (

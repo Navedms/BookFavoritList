@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import routes from "./routes";
@@ -6,15 +6,22 @@ import routes from "./routes";
 // Screens
 import BooksScreen from "@screens/BooksScreen";
 import FavoritesScreen from "@screens/FavoritesScreen";
+import useColors from "@hooks/useColors";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+  const colors = useColors();
   return (
     <Tab.Navigator
       initialRouteName={routes.BOOKS.name}
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: colors.background,
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.dark,
         tabBarLabelStyle: {
           fontSize: 11,
           marginBottom: 2,
