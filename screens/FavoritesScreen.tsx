@@ -10,32 +10,30 @@ import Filters, { SelectedFilters } from "@components/forms/Filters";
 import routes from "@navigation/routes";
 import useColors from "@hooks/useColors";
 import Text from "@components/Text";
-import { useBooks } from "@api/books";
 import { Book, setBookIndex } from "@store/books/booksSlice";
 import { FlashList } from "@shopify/flash-list";
 import {
   defaultFilters,
-  listType,
-  onFilter,
-  resetFilters,
-  setListType,
+  onFilterFavorites,
+  resetFilterFavorites,
 } from "@store/filters/filtersSlice";
 
 interface Props {
   navigation: any;
 }
 
-function BooksScreen({ navigation }: Props) {
+function FavoritesScreen({ navigation }: Props) {
   //state (redux)
-  const filters = useSelector((state: any) => state.filters.filters);
-  const filteredList = useSelector((state: any) => state.filters.filteredList);
-  const listType = useSelector((state: any) => state.filters.listType);
+  const favorites = useSelector((state: any) => state.books.favorites);
+  const isLoading = useSelector((state: any) => state.filters.loading);
+  const error = useSelector((state: any) => state.filters.error);
+  const filters = useSelector((state: any) => state.filters.favoritesFilters);
+  const books = useSelector((state: any) => state.filters.filteredList);
+  const filteredFavorites = useSelector(
+    (state: any) => state.filters.filteredFavorites
+  );
   const dispatch = useDispatch();
   const colors = useColors();
-
-  // APIs
-  // api call and store on redux
-  const { data: books, isLoading, error } = useBooks();
 
   // Filters
 
@@ -95,17 +93,18 @@ function BooksScreen({ navigation }: Props) {
 
   // Handles
 
-  const handleGridListToggle = (type: listType) => {
-    dispatch(setListType(type));
-  };
-
   const handleBookPress = (index: number) => {
-    dispatch(setBookIndex(index));
+    const bookIndex = books.findIndex(
+      (b: Book) =>
+        b.title === filteredFavorites[index].title &&
+        b.number === filteredFavorites[index].number
+    );
+    dispatch(setBookIndex(bookIndex));
     navigation.navigate(routes.BOOK_DETAILS.name);
   };
 
   const handleFilters = (selectedFilters: SelectedFilters) => {
-    dispatch(onFilter({ ...selectedFilters, books }));
+    dispatch(onFilterFavorites({ ...selectedFilters, books: favorites }));
   };
 
   const handleResetFilters = () => {
@@ -113,7 +112,7 @@ function BooksScreen({ navigation }: Props) {
       sort: defaultFilters.sort,
       filters: { ...filters.filters, unit: defaultFilters.filters.unit },
     };
-    dispatch(onFilter({ ...tempFilters, books }));
+    dispatch(onFilterFavorites({ ...tempFilters, books: favorites }));
   };
 
   const handleSearchChangeText = (text: string) => {
@@ -121,7 +120,13 @@ function BooksScreen({ navigation }: Props) {
       ...filters,
       filters: { ...filters.filters, text: text },
     };
-    dispatch(onFilter({ ...tempFilters, books }));
+    dispatch(
+      onFilterFavorites({
+        ...tempFilters,
+        books: favorites,
+        searchElements: ["title", "description"],
+      })
+    );
   };
 
   const handleSearchRemoveText = () => {
@@ -129,51 +134,54 @@ function BooksScreen({ navigation }: Props) {
       ...filters,
       filters: { ...filters.filters, text: "" },
     };
-    dispatch(onFilter({ ...tempFilters, books }));
+    dispatch(onFilterFavorites({ ...tempFilters, books: favorites }));
   };
 
   //
   useEffect(() => {
-    if (books?.length > 0) {
+    if (favorites?.length > 0) {
       handleFilters(filters);
     } else {
-      dispatch(resetFilters());
+      dispatch(resetFilterFavorites());
     }
-  }, [books]);
+  }, [favorites]);
 
   // render
   return (
     <Screen>
       <Activityindicator visible={isLoading} />
       <Filters
-        onGridListToggle={handleGridListToggle}
         onSetFilters={handleFilters}
         onResetFilters={handleResetFilters}
         firstData={filtersSortData}
         defaultFilters={defaultFilters}
         search={searchData}
       />
-      {!filteredList?.length && !isLoading ? (
+      {!filteredFavorites?.length && !isLoading ? (
         <NoResults
           title={"No results found"}
-          text="Sorry, that filter combination has no reaults..."
+          text="The books you add to favorites will appear here..."
           iconName="book-open-page-variant-outline"
         />
       ) : (
         <View style={styles.grid}>
           <FlashList
-            data={filteredList}
+            data={filteredFavorites}
             estimatedItemSize={10}
-            numColumns={listType === "grid" ? 3 : 1}
+            numColumns={1}
             keyExtractor={(item: Book) => item.title.toString()}
             refreshing={isLoading}
             renderItem={({ item, index }) => (
               <BookCard
+                forceListType="list"
                 key={item.title?.toString()}
                 cover={item.cover}
                 title={item.title}
                 releaseDate={item.releaseDate}
                 onPress={() => handleBookPress(index)}
+                description={item.description}
+                showFavoritesHandler
+                book={item}
               />
             )}
           />
@@ -205,4 +213,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BooksScreen;
+export default FavoritesScreen;

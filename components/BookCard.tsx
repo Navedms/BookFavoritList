@@ -1,41 +1,98 @@
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+
 import useColors from "@hooks/useColors";
 import Text from "./Text";
-import { useSelector } from "react-redux";
+import showOk from "./ShowMessage/showOk";
+import { listType } from "@store/filters/filtersSlice";
+import { addFavorite, Book, removeFavorite } from "@store/books/booksSlice";
 
 interface BookCardProps {
   title: string;
   releaseDate: string;
   cover: string;
   onPress?: () => void;
+  forceListType?: listType;
+  description?: string;
+  showFavoritesHandler?: boolean;
+  book?: Book;
 }
 
-const BookCard = ({ title, releaseDate, cover, onPress }: BookCardProps) => {
+const BookCard = ({
+  title,
+  releaseDate,
+  cover,
+  onPress,
+  forceListType,
+  description,
+  showFavoritesHandler = false,
+  book,
+}: BookCardProps) => {
   const listType = useSelector((state: any) => state.filters.listType);
+  const favorites = useSelector((state: any) => state.books.favorites);
+  const isFavorite = favorites?.find((b: any) => b.title === title);
+  const dispatch = useDispatch();
+
   const colors = useColors();
 
-  if (listType === "list") {
+  const listTypeToUse = forceListType || listType;
+
+  // handle
+  const handleFavorite = () => {
+    if (isFavorite) {
+      book && dispatch(removeFavorite(book));
+      showOk("Removed from favorites", colors.delete);
+    } else {
+      book && dispatch(addFavorite(book));
+      showOk("Added to favorites", colors.ok);
+    }
+  };
+
+  // render
+  if (listTypeToUse === "list") {
     return (
       <TouchableOpacity
         style={[styles.listItem, { backgroundColor: colors.light }]}
         onPress={onPress}
         activeOpacity={0.8}
       >
-        <Image
-          source={{ uri: cover }}
-          style={styles.listCover}
-          resizeMode="contain"
-        />
-        <Text
-          numberOfLines={2}
-          style={[styles.listTitle, { color: colors.black }]}
-        >
-          {title}
-        </Text>
-        <Text style={[styles.listDate, { color: colors.darkMedium }]}>
-          {releaseDate}
-        </Text>
+        <View style={styles.listItemContainer}>
+          <Image
+            source={{ uri: cover }}
+            style={styles.listCover}
+            resizeMode="contain"
+          />
+          <Text
+            numberOfLines={2}
+            style={[styles.listTitle, { color: colors.black }]}
+          >
+            {title}
+          </Text>
+          <View style={styles.listDate}>
+            <Text style={[styles.listDateText, { color: colors.darkMedium }]}>
+              {releaseDate}
+            </Text>
+            {showFavoritesHandler && !!book && (
+              <TouchableOpacity onPress={handleFavorite} style={styles.iconBtn}>
+                <Ionicons
+                  name={isFavorite ? "heart" : "heart-outline"}
+                  size={28}
+                  color={isFavorite ? colors.delete : colors.darkMedium}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+        {description && (
+          <Text
+            numberOfLines={4}
+            style={[styles.listDescription, { color: colors.dark }]}
+          >
+            {description}
+          </Text>
+        )}
       </TouchableOpacity>
     );
   }
@@ -90,12 +147,23 @@ const styles = StyleSheet.create({
   },
   listItem: {
     width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 16,
     marginVertical: 4,
     borderRadius: 0,
+  },
+  listItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  listDescription: {
+    flex: 1,
+    fontSize: 12,
+    marginTop: 12,
+  },
+  iconBtn: {
+    paddingTop: 4,
+    alignSelf: "flex-end",
   },
   listCover: {
     width: 60,
@@ -110,9 +178,11 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   listDate: {
-    fontSize: 13,
     marginLeft: 8,
     alignSelf: "flex-start",
+  },
+  listDateText: {
+    fontSize: 13,
   },
 });
 

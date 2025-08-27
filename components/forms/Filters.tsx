@@ -192,7 +192,7 @@ function Filters({
             onRemoveValue={search.onRemoveValue()}
             placeholder={search.placeholder}
             icon={search.icon}
-            width={onGridListToggle ? "70%" : "84%"}
+            width={onGridListToggle ? "71.5%" : "84%"}
             disabled={search.disabled}
           />
         )}

@@ -48,7 +48,7 @@ const booksSlice = createSlice({
     },
     removeFavorite: (state, { payload }: PayloadAction<Book>) => {
       state.favorites = state.favorites.filter(
-        (b) => b.title !== payload.title
+        (b: Book) => b.title !== payload.title
       );
     },
   },
