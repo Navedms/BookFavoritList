@@ -19,7 +19,7 @@ import {
   onFilter,
   setListType,
 } from "@store/filters/filtersSlice";
-import { toggleTheme } from "@store/themeSlice";
+import { toggleTheme } from "@store/theme/themeSlice";
 
 interface Props {
   navigation: any;
@@ -30,13 +30,12 @@ function BooksScreen({ navigation }: Props) {
   const filters = useSelector((state: any) => state.filters.filters);
   const filteredList = useSelector((state: any) => state.filters.filteredList);
   const listType = useSelector((state: any) => state.filters.listType);
-  const books = useSelector((state: any) => state.books.books);
   const dispatch = useDispatch();
   const colors = useColors();
 
   // APIs
   // api call and store on redux
-  const { isLoading, error } = useBooks();
+  const { data: books, isLoading, error } = useBooks();
 
   // Filters
 
@@ -97,7 +96,7 @@ function BooksScreen({ navigation }: Props) {
   // Handles
 
   const handleGridListToggle = (type: listType) => {
-    dispatch(toggleTheme());
+    // dispatch(toggleTheme());
     dispatch(setListType(type));
   };
 
@@ -138,7 +137,6 @@ function BooksScreen({ navigation }: Props) {
   useEffect(() => {
     handleFilters(filters);
   }, []);
-  console.log(listType);
 
   // render
   return (
