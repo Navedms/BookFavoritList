@@ -3,8 +3,13 @@ import React from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
-import { store } from "@store/store";
 import { NavigationContainer } from "@react-navigation/native";
+import FlashMessage from "react-native-flash-message";
+
+// store
+import { store } from "@store/store";
+
+// navigation
 import { navigationRef } from "@navigation/rootNavigation";
 import { getNavigationTheme } from "@navigation/navigationTheme";
 import AppNavigator from "@navigation/AppNavigator";
@@ -22,6 +27,7 @@ export default function App() {
             theme={getNavigationTheme("light")}
           >
             <AppNavigator />
+            <FlashMessage position="bottom" />
           </NavigationContainer>
         </QueryClientProvider>
       </PersistGate>

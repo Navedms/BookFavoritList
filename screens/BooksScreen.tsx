@@ -19,7 +19,6 @@ import {
   onFilter,
   setListType,
 } from "@store/filters/filtersSlice";
-import { toggleTheme } from "@store/theme/themeSlice";
 
 interface Props {
   navigation: any;
@@ -96,7 +95,6 @@ function BooksScreen({ navigation }: Props) {
   // Handles
 
   const handleGridListToggle = (type: listType) => {
-    // dispatch(toggleTheme());
     dispatch(setListType(type));
   };
 
@@ -135,8 +133,10 @@ function BooksScreen({ navigation }: Props) {
 
   //
   useEffect(() => {
-    handleFilters(filters);
-  }, []);
+    if (books?.length > 0) {
+      handleFilters(filters);
+    }
+  }, [books]);
 
   // render
   return (
