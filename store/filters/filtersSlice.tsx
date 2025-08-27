@@ -66,15 +66,21 @@ export const defaultFilters: SelectedFilters = {
 interface FiltersState {
   filters: SelectedFilters;
   loading: boolean;
+  error?: string;
   filteredList: Book[];
   listType: listType;
+  favoritesFilters: SelectedFilters;
+  filteredFavorites: Book[];
 }
 
 const initialState: FiltersState = {
   filters: defaultFilters,
   loading: false,
+  error: undefined,
   filteredList: [],
   listType: "grid",
+  favoritesFilters: defaultFilters,
+  filteredFavorites: [],
 };
 
 export type sortType = "name" | "pages" | "releaseDate";
@@ -108,11 +114,43 @@ const filtersSlice = createSlice({
       );
       state.loading = false;
     },
+    resetFilters(state) {
+      state.filters = defaultFilters;
+      state.filteredList = [];
+    },
     setListType(state, { payload }: PayloadAction<listType>) {
       state.listType = payload;
+    },
+    onFilterFavorites(
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        SelectedFilters & { books: Book[]; searchElements?: string[] }
+      >
+    ) {
+      state.loading = true;
+      state.favoritesFilters = payload;
+      state.filteredFavorites = getFilteredBooks(
+        payload.books,
+        payload.sort,
+        payload.filters.text,
+        payload.searchElements
+      );
+      state.loading = false;
+    },
+    resetFilterFavorites(state) {
+      state.favoritesFilters = defaultFilters;
+      state.filteredFavorites = [];
     },
   },
 });
 
-export const { onFilter, setListType } = filtersSlice.actions;
+export const {
+  onFilter,
+  resetFilters,
+  setListType,
+  onFilterFavorites,
+  resetFilterFavorites,
+} = filtersSlice.actions;
 export default filtersSlice.reducer;
