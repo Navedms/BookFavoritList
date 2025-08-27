@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
 import { useFormikContext } from "formik";
 
 import TextInput from "../AppTextInput";
 import ErrorMessage from "./ErrorMessage";
-import colors from "@config/colors";
+import useColors from "@hooks/useColors";
 
 interface FormFieldProps {
   firstValue?: unknown;
@@ -35,12 +34,13 @@ function AppFormField({
   textStyle,
   onChangeCallBack,
   onRemoveValue,
-  placeholderColor = colors.darkMedium,
+  placeholderColor = "darkMedium",
   placeholder,
   icon,
   disabled,
   ...otherProps
 }: FormFieldProps) {
+  const colors = useColors();
   const { setFieldTouched, setFieldValue, errors, touched, values } =
     useFormikContext();
 
@@ -68,7 +68,7 @@ function AppFormField({
         border={border}
         style={style}
         textStyle={textStyle}
-        placeholderColor={placeholderColor}
+        placeholderColor={colors[placeholderColor]}
         placeholder={placeholder}
         icon={icon}
         disabled={disabled}
@@ -79,18 +79,5 @@ function AppFormField({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  numbersControl: {
-    paddingHorizontal: 8,
-    marginTop: -8,
-  },
-});
 
 export default AppFormField;

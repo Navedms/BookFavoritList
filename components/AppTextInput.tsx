@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { View, StyleSheet, TextInput } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import colors from "@config/colors";
+import useColors from "@hooks/useColors";
 import defaultStyle from "@config/style";
 import Text from "./Text";
 
@@ -28,7 +28,7 @@ interface AppTextInputProps {
 function AppTextInput({
   icon,
   value,
-  backgroundColor = colors.light,
+  backgroundColor = "light",
   border = 0,
   width = "100%",
   noLabel = false,
@@ -42,6 +42,8 @@ function AppTextInput({
   onRemoveValue,
   ...otherProps
 }: AppTextInputProps) {
+  const colors = useColors();
+
   const [secureTextEntryType, setSecureTextEntryType] = useState<boolean>(
     secureTextEntry ? true : false
   );
@@ -52,7 +54,7 @@ function AppTextInput({
       style={[
         styles.container,
         {
-          backgroundColor: backgroundColor,
+          backgroundColor: colors[backgroundColor],
           borderWidth: border,
           width: width,
         },
@@ -61,7 +63,9 @@ function AppTextInput({
     >
       {label && (
         <View style={styles.labelContainer}>
-          <Text style={styles.label}>{placeholder}</Text>
+          <Text style={[styles.label, { color: colors.dark }]}>
+            {placeholder}
+          </Text>
         </View>
       )}
       {icon && (
@@ -79,6 +83,7 @@ function AppTextInput({
         style={[
           defaultStyle.text,
           styles.input,
+          { color: colors.dark },
           textStyle,
           label && { marginTop: 5, marginBottom: -5 },
         ]}
@@ -142,7 +147,6 @@ const styles = StyleSheet.create({
   input: {
     textAlign: "left",
     marginHorizontal: 10,
-    color: colors.dark,
     flex: 1,
     flexWrap: "wrap",
   },
@@ -159,7 +163,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    color: colors.dark,
   },
 });
 

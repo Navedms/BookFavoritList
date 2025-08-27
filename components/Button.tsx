@@ -2,8 +2,7 @@ import React, { ComponentProps } from "react";
 import { StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import colors from "@config/colors";
-import defaultStyle from "@config/style";
+import useColors from "@hooks/useColors";
 
 export interface AppButtonProps {
   title?: string;
@@ -32,6 +31,7 @@ function AppButton({
   style,
   disabled,
 }: AppButtonProps) {
+  const colors = useColors();
   return (
     <TouchableOpacity
       activeOpacity={0.5}
@@ -71,7 +71,6 @@ function AppButton({
 const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
-    backgroundColor: colors.primary,
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",

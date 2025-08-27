@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 
-import colors from "@config/colors";
+import useColors from "@hooks/useColors";
 import Text from "../Text";
 
 interface ErrorMessageProps {
@@ -11,14 +11,16 @@ interface ErrorMessageProps {
 }
 
 function ErrorMessage({ error, visible, style }: ErrorMessageProps) {
+  const colors = useColors();
   if (!visible || !error) return null;
 
-  return <Text style={[styles.error, style]}>{error}</Text>;
+  return (
+    <Text style={[styles.error, { color: colors.delete }, style]}>{error}</Text>
+  );
 }
 
 const styles = StyleSheet.create({
   error: {
-    color: colors.delete,
     textAlign: "center",
   },
 });
