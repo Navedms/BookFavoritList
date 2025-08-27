@@ -17,7 +17,7 @@ export const lightColors: Colors = {
   light: "#f2f2f2",
   delete: "#ff3333",
   lightDelete: "#FF7D7D",
-  sun: "#fff12e",
+  ok: "#53c68c",
   disabled: "#F2DEDE",
 };
 
@@ -36,7 +36,7 @@ export const darkColors: Colors = {
   light: "#4c4b4b",
   delete: "#ff3333",
   lightDelete: "#FF7D7D",
-  sun: "#fff12e",
+  ok: "#53c68c",
   disabled: "#333",
 };
 

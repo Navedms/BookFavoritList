@@ -15,12 +15,14 @@ export interface BooksState {
   books: Book[];
   lastFetched: number | null;
   currentBookIndex: number;
+  favorites: Book[];
 }
 
 const initialState: BooksState = {
   books: [],
   lastFetched: null,
   currentBookIndex: -1,
+  favorites: [],
 };
 
 const booksSlice = createSlice({
@@ -41,8 +43,22 @@ const booksSlice = createSlice({
     setBookIndex: (state, { payload }: PayloadAction<number>) => {
       state.currentBookIndex = payload;
     },
+    addFavorite: (state, { payload }: PayloadAction<Book>) => {
+      state.favorites.push(payload);
+    },
+    removeFavorite: (state, { payload }: PayloadAction<Book>) => {
+      state.favorites = state.favorites.filter(
+        (b) => b.title !== payload.title
+      );
+    },
   },
 });
 
-export const { setBooks, clearBooks, setBookIndex } = booksSlice.actions;
+export const {
+  setBooks,
+  clearBooks,
+  setBookIndex,
+  addFavorite,
+  removeFavorite,
+} = booksSlice.actions;
 export default booksSlice.reducer;
