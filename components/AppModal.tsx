@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import colors from "@config/colors";
+import useColors from "@hooks/useColors";
 import Button from "./Button";
 
 interface AppModal {
@@ -37,6 +37,7 @@ function AppModal({
   disabled = false,
   style,
 }: AppModal) {
+  const colors = useColors();
   return (
     <Modal
       animationType={animationType}
@@ -47,7 +48,9 @@ function AppModal({
         setVisible(!visible);
       }}
     >
-      <View style={styles.fullscreen}>
+      <View
+        style={[styles.fullscreen, { backgroundColor: colors.opacityBlack }]}
+      >
         <TouchableOpacity
           onPress={() => {
             if (!disabled) {
@@ -59,7 +62,9 @@ function AppModal({
         >
           <MaterialCommunityIcons name="close" size={30} color={colors.white} />
         </TouchableOpacity>
-        <View style={[styles.container, style]}>
+        <View
+          style={[styles.container, { backgroundColor: colors.white }, style]}
+        >
           <View style={styles.children}>{children}</View>
           {!disabled && (
             <View style={styles.closeBtn}>
@@ -81,7 +86,6 @@ function AppModal({
 
 const styles = StyleSheet.create({
   fullscreen: {
-    backgroundColor: colors.opacityBlack,
     flex: 1,
   },
   container: {
@@ -89,7 +93,6 @@ const styles = StyleSheet.create({
     left: "5%",
     width: "90%",
     height: "85%",
-    backgroundColor: colors.white,
     borderRadius: 10,
     padding: 15,
   },

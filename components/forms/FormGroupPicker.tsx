@@ -4,7 +4,7 @@ import { useFormikContext } from "formik";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import ErrorMessage from "./ErrorMessage";
-import colors from "../../config/colors";
+import useColors from "@hooks/useColors";
 import Text from "../Text";
 
 interface Item {
@@ -36,8 +36,8 @@ function AppFormGroupPicker({
   name,
   label,
   border = 1,
-  backgroundColor = colors.light,
-  labelColor = colors.black,
+  backgroundColor = "light",
+  labelColor = "black",
   width = 1,
   fixedPadding = 40,
   disabled,
@@ -46,6 +46,7 @@ function AppFormGroupPicker({
   verticalElementInIT,
   returnInArry = false,
 }: AppFormGroupPickerProps) {
+  const colors = useColors();
   const { setFieldValue, errors, touched, values } = useFormikContext();
 
   const windowWidth = (Dimensions.get("window").width - fixedPadding) * width;
@@ -90,12 +91,12 @@ function AppFormGroupPicker({
           styles.container,
           style,
           {
-            backgroundColor: backgroundColor,
+            backgroundColor: colors[backgroundColor],
             width: windowWidth,
           },
         ]}
       >
-        {label && <Text style={{ color: labelColor }}>{label}</Text>}
+        {label && <Text style={{ color: colors[labelColor] }}>{label}</Text>}
         <View style={styles.itemsContainer}>
           {list?.map((item, index) => (
             <TouchableOpacity
@@ -103,6 +104,7 @@ function AppFormGroupPicker({
               style={[
                 styles.item,
                 {
+                  borderColor: colors.medium,
                   width: verticalElementInIT
                     ? (windowWidth * 0.9) / list.length
                     : windowWidth / list.length,
@@ -120,7 +122,7 @@ function AppFormGroupPicker({
                 },
                 (item.id === values[name] ||
                   (item.id === firstValue && !values[name])) && {
-                  ...styles.selectItem,
+                  backgroundColor: colors.primary,
                 },
               ]}
               onPress={() =>
@@ -162,6 +164,9 @@ function AppFormGroupPicker({
                 <TouchableOpacity
                   style={[
                     styles.verticalElementInIT,
+                    {
+                      borderColor: colors.medium,
+                    },
                     index === 0 && {
                       borderTopEndRadius: 8,
                       borderTopStartRadius: 8,
@@ -176,7 +181,7 @@ function AppFormGroupPicker({
                     (item.id === values[verticalElementInIT.name] ||
                       (item.id === verticalElementInIT.value &&
                         !values[verticalElementInIT.name])) && {
-                      ...styles.selectItem,
+                      backgroundColor: colors.primary,
                     },
                   ]}
                   key={item.id}
@@ -219,12 +224,6 @@ const styles = StyleSheet.create({
     marginRight: 14,
     marginVertical: 12,
   },
-  select: {
-    textAlign: "right",
-    marginHorizontal: 10,
-    color: colors.dark,
-    paddingVertical: 14,
-  },
   itemsContainer: {
     flexDirection: "row",
     marginTop: 5,
@@ -236,12 +235,8 @@ const styles = StyleSheet.create({
     borderStartWidth: 0,
     alignItems: "center",
     justifyContent: "center",
-    borderColor: colors.medium,
     paddingHorizontal: 8,
     paddingVertical: 6,
-  },
-  selectItem: {
-    backgroundColor: colors.primary,
   },
   verticalElementInItContainer: {
     flexDirection: "column",
@@ -252,7 +247,6 @@ const styles = StyleSheet.create({
   verticalElementInIT: {
     width: 25,
     borderWidth: 1,
-    borderColor: colors.medium,
     alignItems: "center",
   },
 });

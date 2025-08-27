@@ -2,7 +2,7 @@ import React, { ComponentProps } from "react";
 import { View, StyleSheet } from "react-native";
 
 import Text from "./Text";
-import colors from "@config/colors";
+import useColors from "@hooks/useColors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface NoResultsProps {
@@ -18,10 +18,11 @@ function NoResults({
   title,
   text,
   iconName,
-  iconColor = colors.dark,
+  iconColor = "dark",
   flex = true,
   button,
 }: NoResultsProps) {
+  const colors = useColors();
   return (
     <View style={[styles.container, flex && styles.fullScreen]}>
       {iconName && (
@@ -29,11 +30,11 @@ function NoResults({
           name={iconName}
           size={48}
           style={styles.icon}
-          color={iconColor}
+          color={colors[iconColor]}
         />
       )}
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.text}>{text}</Text>
+      <Text style={[styles.text, { color: colors.dark }]}>{text}</Text>
       {button && <View style={styles.btn}>{button}</View>}
     </View>
   );
@@ -61,7 +62,6 @@ const styles = StyleSheet.create({
   text: {
     paddingTop: 2,
     fontSize: 16,
-    color: colors.dark,
     textAlign: "center",
   },
   btn: {

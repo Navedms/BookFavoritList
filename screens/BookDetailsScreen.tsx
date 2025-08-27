@@ -53,7 +53,7 @@ const BookDetailsScreen = () => {
       </Text>
       <Image
         source={{ uri: book.cover }}
-        style={styles.cover}
+        style={[styles.cover, { backgroundColor: colors.light }]}
         resizeMode="contain"
       />
       <Text style={[styles.description, { color: colors.dark }]}>
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     height: 220,
     borderRadius: 8,
     marginBottom: 16,
-    backgroundColor: "#eee",
   },
   description: {
     fontSize: 16,

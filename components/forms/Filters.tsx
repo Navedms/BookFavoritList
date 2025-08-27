@@ -3,11 +3,12 @@ import { View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Yup from "yup";
 
-import colors from "@config/colors";
+import useColors from "@hooks/useColors";
 import Modal from "../AppModal";
 import Text from "../Text";
 import { Form, SubmitButton, FormGroupPicker, FormField } from "./index";
 import { listType, Sort } from "@store/filters/filtersSlice";
+import DarkModeSwitch from "./DarkModeSwitch";
 
 interface FilterItem {
   type: string;
@@ -69,6 +70,8 @@ function Filters({
   const [filterSelect, setFilterSelect] = useState<boolean>(false);
   const [isGridList, setIsGridList] = useState<boolean>(true);
   const width = Dimensions.get("window").width * 0.82;
+
+  const colors = useColors();
 
   useEffect(() => {
     setData(firstData);
@@ -200,14 +203,17 @@ function Filters({
       <Modal
         visible={visible}
         setVisible={setVisible}
-        style={styles.modalStyle}
+        style={{ backgroundColor: colors.light }}
       >
         <View style={[styles.modalContainer, { width: width }]}>
           <View style={styles.header}>
-            <Text style={styles.title}>Filters:</Text>
+            <Text style={[styles.title, { color: colors.black }]}>
+              Filters:
+            </Text>
           </View>
           {data?.map((item) => renderFormComponent(item))}
           <View style={styles.separatorItems}></View>
+          <DarkModeSwitch />
           <SubmitButton title="Ok" style={styles.submit} />
         </View>
       </Modal>
@@ -216,9 +222,6 @@ function Filters({
 }
 
 const styles = StyleSheet.create({
-  modalStyle: {
-    backgroundColor: colors.light,
-  },
   modalContainer: {
     flex: 1,
     alignItems: "flex-start",
@@ -250,17 +253,9 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     textAlign: "center",
-    color: colors.black,
   },
   icon: {
     paddingHorizontal: 5,
-  },
-  separator: {
-    marginLeft: 8,
-    marginRight: -6,
-    borderLeftWidth: 1,
-    borderColor: colors.medium,
-    marginVertical: 10,
   },
   separatorItems: {
     flex: 1,
